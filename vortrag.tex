@@ -62,12 +62,17 @@
     firstnumber=1,
     stepnumber=1,
     basewidth=0.45em,
-    basicstyle=\ttfamily\scriptsize,
+    showstringspaces=false,
+    basicstyle=\ttfamily\fontsize{7pt}{8pt}\selectfont,
     numberstyle=\color{lightgray}\fontsize{5pt}{6pt}\selectfont,
     identifierstyle=\color{black},
-    commentstyle=\itshape\color{gray},
-    keywordstyle=\bfseries\color{red!70!black},
-    stringstyle=\color{green!50!black},
+    commentstyle=\color{gray},
+    % keywordstyle=\bfseries\color{red!70!black},
+    % stringstyle=\color{green!50!black},
+    keywordstyle=\bfseries\color{black},
+    stringstyle=\color{black},
+    % breaklines=true, % Turn off in preview, this makes it fucking slow
+    postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}},
     literate={Ö}{{\"O}}1 {Ä}{{\"A}}1 {Ü}{{\"U}}1 {ß}{{\ss}}1 {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1,
 }
 
@@ -86,15 +91,16 @@
 
 \makeatletter\newcommand{\insertcode}[5]{
     % \insertcode{filename}{linecount}{offset}{from}{to}
+    \vfill
     \makebox[\linewidth][c]{
         \begin{tikzpicture}[remember picture, inner sep=0pt]
             \node (overview) {
-                \resizebox{2cm}{!}{\begin{minipage}{10cm}
+                \resizebox{7mm}{!}{\begin{minipage}{10cm}
                     \lstinputlisting[style=nonumbers, name=overview]{#1}
                 \end{minipage}}
             };
 
-            \node (code) [right=4mm of overview] {
+            \node (code) [right=8mm of overview] {
                 \begin{minipage}{10cm}
                     \FPeval{\result}{clip(#3+#4-1)}
                     \lstinputlisting[firstline=#4, lastline=#5, firstnumber=\result, name=code]{#1}
@@ -111,6 +117,7 @@
             \end{pgfonlayer}
         \end{tikzpicture}
     }
+    \vfill
 }\makeatother
 
 %--- metadata ------------------------------------------------------------------
@@ -150,11 +157,158 @@
 }
 
 
+%-------------------------------------------------------------------------------
 
-% %-------------------------------------------------------------------------------
-%
-% \begin{frame}{title}
-% \end{frame}
+
+\section{Funktionen}
+
+\subsection{iinit()}
+
+\begin{frame}{iinit()}
+    \insertcode{source/alloc.c}{334}{6900}{23}{42}
+\end{frame}
+
+
+%-------------------------------------------------------------------------------
+
+
+\subsection{smount()}
+
+\begin{frame}{smount()}
+    \insertcode{source/sys3.c}{198}{6000}{87}{103}
+\end{frame}
+
+\begin{frame}{smount()}
+    \insertcode{source/sys3.c}{198}{6000}{104}{121}
+\end{frame}
+
+\begin{frame}{smount()}
+    \insertcode{source/sys3.c}{198}{6000}{122}{139}
+\end{frame}
+
+
+%-------------------------------------------------------------------------------
+
+
+\subsection{iget()}
+
+\begin{frame}{iget()}
+    \insertcode{source/iget.c}{243}{7250}{27}{32}
+\end{frame}
+
+\begin{frame}{iget()}
+    \insertcode{source/iget.c}{243}{7250}{34}{59}
+\end{frame}
+
+\begin{frame}{iget()}
+    \insertcode{source/iget.c}{243}{7250}{60}{85}
+\end{frame}
+
+
+%-------------------------------------------------------------------------------
+
+
+\subsection{getfs()}
+
+\begin{frame}{getfs()}
+    \insertcode{source/alloc.c}{334}{6900}{268}{286}
+\end{frame}
+
+
+%-------------------------------------------------------------------------------
+
+
+\subsection{update()}
+
+\begin{frame}{update()}
+    \insertcode{source/alloc.c}{334}{6900}{302}{332}
+\end{frame}
+
+
+%-------------------------------------------------------------------------------
+
+
+\subsection{sumount()}
+
+\begin{frame}{sumount()}
+    \insertcode{source/sys3.c}{198}{6000}{145}{159}
+\end{frame}
+
+\begin{frame}{sumount()}
+    \insertcode{source/sys3.c}{198}{6000}{161}{174}
+\end{frame}
+
+
+%-------------------------------------------------------------------------------
+
+
+\subsection{alloc()}
+
+\begin{frame}{alloc()}
+    \insertcode{source/alloc.c}{334}{6900}{57}{85}
+\end{frame}
+
+\begin{frame}{alloc()}
+    \insertcode{source/alloc.c}{334}{6900}{87}{92}
+\end{frame}
+
+
+%-------------------------------------------------------------------------------
+
+
+\subsection{itrunc()}
+
+\begin{frame}{itrunc()}
+    \insertcode{source/iget.c}{243}{7250}{165}{174}
+\end{frame}
+
+\begin{frame}{itrunc()}
+    \insertcode{source/iget.c}{243}{7250}{175}{195}
+\end{frame}
+
+\begin{frame}{itrunc()}
+    \insertcode{source/iget.c}{243}{7250}{196}{200}
+\end{frame}
+
+
+%-------------------------------------------------------------------------------
+
+
+\subsection{free()}
+
+\begin{frame}{free()}
+    \insertcode{source/alloc.c}{334}{6900}{101}{128}
+\end{frame}
+
+
+%-------------------------------------------------------------------------------
+
+
+\subsection{iput()}
+
+\begin{frame}{iput()}
+    \insertcode{source/iget.c}{243}{7250}{95}{115}
+\end{frame}
+
+
+%-------------------------------------------------------------------------------
+
+
+\subsection{ifree()}
+
+\begin{frame}{ifree()}
+    \insertcode{source/alloc.c}{334}{6900}{235}{246}
+\end{frame}
+
+
+%-------------------------------------------------------------------------------
+
+
+\subsection{iupdat()}
+
+\begin{frame}{iupdat()}
+    \insertcode{source/iget.c}{243}{7250}{125}{153}
+\end{frame}
 
 
 \end{document}
