@@ -1,0 +1,160 @@
+\documentclass{beamer}
+
+%--- includes ------------------------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{helvet}
+
+\usepackage{etex}
+
+\usepackage{xspace}
+\xspaceaddexceptions{"=}
+\usepackage{microtype}
+\usepackage{fixltx2e}
+
+% \usepackage{amsmath}
+% \usepackage{amssymb}
+% \usepackage{mathtools}
+
+% \usepackage{graphicx}
+% \usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata,calc,chains,trees,positioning,scopes,decorations.pathmorphing,shapes,backgrounds,tikzmark}
+
+\usepackage{multicol}
+\usepackage{tabu}
+\usepackage{multirow}
+\usepackage{booktabs}
+
+\usepackage{listings}
+\usepackage{fp}
+
+% \usepackage{hyperref}
+
+%--- colors and layout ---------------------------------------------------------
+\usetheme{default}
+\usecolortheme{rose}
+
+\definecolor{uniblue}{rgb}{0,0.31,0.62}
+\colorlet{maincolor}{uniblue}
+\setbeamercolor{structure}{fg=maincolor}
+\setbeamercolor{block title alerted}{fg=red!90!black}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{blocks}[rounded]
+\setbeamertemplate{footline}{\raisebox{5pt}{\makebox[\paperwidth]{\color{lightgray}\scriptsize\hyperlink{TableOfContents}{\insertframenumber}}}}
+
+\setbeamerfont{title}{series=\bfseries,parent=structure}
+\setbeamerfont{subtitle}{size=\footnotesize,series=\normalfont,parent=structure}
+
+%--- code listings -------------------------------------------------------------
+\lstdefinestyle{basestyle}{
+    language=C,
+    tabsize=4,
+    frame=none,
+    xleftmargin=15pt,
+    framexleftmargin=15pt,
+    numbersep=3pt,
+    aboveskip=0pt,
+    belowskip=0pt,
+    numbers=left,
+    firstnumber=1,
+    stepnumber=1,
+    basewidth=0.45em,
+    basicstyle=\ttfamily\scriptsize,
+    numberstyle=\color{lightgray}\fontsize{5pt}{6pt}\selectfont,
+    identifierstyle=\color{black},
+    commentstyle=\itshape\color{gray},
+    keywordstyle=\bfseries\color{red!70!black},
+    stringstyle=\color{green!50!black},
+    literate={Ö}{{\"O}}1 {Ä}{{\"A}}1 {Ü}{{\"U}}1 {ß}{{\ss}}1 {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1,
+}
+
+\lstdefinestyle{nonumbers}{
+    style=basestyle,
+    xleftmargin=0pt,
+    framexleftmargin=0pt,
+    numbersep=0pt,
+    numbers=none,
+    % backgroundcolor=\color{black!10}
+}
+
+\lstset{
+    style=basestyle
+}
+
+\makeatletter\newcommand{\insertcode}[5]{
+    % \insertcode{filename}{linecount}{offset}{from}{to}
+    \makebox[\linewidth][c]{
+        \begin{tikzpicture}[remember picture, inner sep=0pt]
+            \node (overview) {
+                \resizebox{2cm}{!}{\begin{minipage}{10cm}
+                    \lstinputlisting[style=nonumbers, name=overview]{#1}
+                \end{minipage}}
+            };
+
+            \node (code) [right=4mm of overview] {
+                \begin{minipage}{10cm}
+                    \FPeval{\result}{clip(#3+#4-1)}
+                    \lstinputlisting[firstline=#4, lastline=#5, firstnumber=\result, name=code]{#1}
+                \end{minipage}
+            };
+
+            \node [below=1mm of overview] {\tiny\itshape\filename@parse{#1}\filename@base.\filename@ext};
+
+            \begin{pgfonlayer}{background}
+                \coordinate (overview-start) at ($(overview.north west)!{(#4-1)/#2}!(overview.south west)+(-1pt,0)$);
+                \coordinate (overview-end) at ($(overview.north west)!#5/#2!(overview.south west)$);
+                \path [fill=maincolor!10, rounded corners=1pt] (overview-start) rectangle ($(overview.south east |- overview-end)+(-4pt,0)$);
+                \path [shade, left color=maincolor!10] (code.north west) to [out=180, in=0, looseness=0.2] ($(overview.south east |- overview-start)+(-5pt,0)$) -- ($(overview.south east |- overview-end)+(-5pt,0)$) to [out=0, in=180, looseness=0.2] (code.south west);
+            \end{pgfonlayer}
+        \end{tikzpicture}
+    }
+}\makeatother
+
+%--- metadata ------------------------------------------------------------------
+\title{Kapitel 20 -- Dateisysteme}
+\subtitle{aus \emph{Lions' Commentary on UNIX 6th Edition}}
+\author{Sven Greiner\\\footnotesize\ttfamily sven@sammyshp.de}
+\date{27. Januar 2015}
+
+%--- text replacements ---------------------------------------------------------
+\newcommand{\zB}{z.\,B.~}
+\newcommand{\ZB}{Z.\,B.~}
+\newcommand{\dphp}{d.\,h.~}
+\newcommand{\Dphp}{D.\,h.~}
+
+\begin{document}
+
+%===============================================================================
+
+
+{\setbeamertemplate{footline}{}
+\begin{frame}
+    \titlepage
+\end{frame}
+}
+
+
+%-------------------------------------------------------------------------------
+
+
+{\setbeamertemplate{footline}{}
+\begin{frame}
+    \label{TableOfContents}
+    \vfill
+    \tableofcontents
+    \vfill
+\end{frame}
+}
+
+
+
+% %-------------------------------------------------------------------------------
+%
+% \begin{frame}{title}
+% \end{frame}
+
+
+\end{document}
