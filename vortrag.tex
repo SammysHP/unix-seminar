@@ -90,12 +90,20 @@
 }
 
 \makeatletter\newcommand{\insertcode}[5]{
-    % \insertcode{filename}{linecount}{offset}{from}{to}
+    % USAGE:
+    %   \insertcode{filename}{linecount}{offset}{from}{to}
+    % filename:     Name of the source file
+    % linecount:    Number of lines in file
+    % offset:       Number of first line
+    % from:         Start with this line (relative to file)
+    % to:           End with this line (relative to file)
     \vfill
     \makebox[\linewidth][c]{
         \begin{tikzpicture}[remember picture, inner sep=0pt]
+            \path[use as bounding box] (-0.7,3.9) rectangle (11.5,-3.9);
+
             \node (overview) {
-                \resizebox{7mm}{!}{\begin{minipage}{10cm}
+                \resizebox{8mm}{!}{\begin{minipage}{10cm}
                     \lstinputlisting[style=nonumbers, name=overview]{#1}
                 \end{minipage}}
             };
@@ -112,8 +120,9 @@
             \begin{pgfonlayer}{background}
                 \coordinate (overview-start) at ($(overview.north west)!{(#4-1)/#2}!(overview.south west)+(-1pt,0)$);
                 \coordinate (overview-end) at ($(overview.north west)!#5/#2!(overview.south west)$);
-                \path [fill=maincolor!10, rounded corners=1pt] (overview-start) rectangle ($(overview.south east |- overview-end)+(-4pt,0)$);
-                \path [shade, left color=maincolor!10] (code.north west) to [out=180, in=0, looseness=0.2] ($(overview.south east |- overview-start)+(-5pt,0)$) -- ($(overview.south east |- overview-end)+(-5pt,0)$) to [out=0, in=180, looseness=0.2] (code.south west);
+                % \path [fill=maincolor!10, rounded corners=1pt] (overview-start) rectangle ($(overview.south east |- overview-end)+(-4pt,0)$);
+                \path [fill=maincolor!10, rounded corners=1pt] (overview-start) rectangle ($(overview.south east |- overview-end)+(1pt,0)$);
+                % \path [shade, left color=maincolor!10] (code.north west) to [out=180, in=0, looseness=0.2] ($(overview.south east |- overview-start)+(-5pt,0)$) -- ($(overview.south east |- overview-end)+(-5pt,0)$) to [out=0, in=180, looseness=0.2] (code.south west);
             \end{pgfonlayer}
         \end{tikzpicture}
     }
