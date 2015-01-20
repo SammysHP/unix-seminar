@@ -22,12 +22,13 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows,automata,calc,chains,trees,positioning,scopes,decorations.pathmorphing,shapes,backgrounds,tikzmark}
 
-\usepackage{multicol}
-\usepackage{tabu}
-\usepackage{multirow}
-\usepackage{booktabs}
+% \usepackage{multicol}
+% \usepackage{tabu}
+% \usepackage{multirow}
+% \usepackage{booktabs}
 
 \usepackage{listings}
+\usepackage[noend]{algpseudocode}
 \usepackage{fp}
 
 % \usepackage{hyperref}
@@ -44,6 +45,12 @@
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{blocks}[rounded]
 \setbeamertemplate{footline}{\raisebox{5pt}{\makebox[\paperwidth]{\color{lightgray}\scriptsize\hyperlink{TableOfContents}{\insertframenumber}}}}
+\setbeamertemplate{section page}{
+    \centering
+    \begin{beamercolorbox}[sep=12pt,center]{part title}
+      \usebeamerfont{section title}\insertsection\par
+    \end{beamercolorbox}
+}
 
 \setbeamerfont{title}{series=\bfseries,parent=structure}
 \setbeamerfont{subtitle}{size=\footnotesize,series=\normalfont,parent=structure}
@@ -55,7 +62,7 @@
     frame=none,
     xleftmargin=15pt,
     framexleftmargin=15pt,
-    numbersep=3pt,
+    numbersep=4pt,
     aboveskip=0pt,
     belowskip=0pt,
     numbers=left,
@@ -103,7 +110,7 @@
             \path[use as bounding box] (-0.7,3.9) rectangle (11.5,-3.9);
 
             \node (overview) {
-                \resizebox{8mm}{!}{\begin{minipage}{10cm}
+                \resizebox{8.5mm}{!}{\begin{minipage}{10cm}
                     \lstinputlisting[style=nonumbers, name=overview]{#1}
                 \end{minipage}}
             };
@@ -129,6 +136,9 @@
     \vfill
 }\makeatother
 
+\algrenewcommand{\alglinenumber}[1]{\color{lightgray}\scriptsize #1\ }
+\makeatletter\renewcommand{\ALG@beginalgorithmic}{\small}\makeatother
+
 %--- metadata ------------------------------------------------------------------
 \title{Kapitel 20 -- Dateisysteme}
 \subtitle{aus \emph{Lions' Commentary on UNIX 6th Edition}}
@@ -146,24 +156,101 @@
 %===============================================================================
 
 
-{\setbeamertemplate{footline}{}
-\begin{frame}
+\begin{frame}[plain]
     \titlepage
 \end{frame}
-}
 
 
 %-------------------------------------------------------------------------------
 
 
-{\setbeamertemplate{footline}{}
-\begin{frame}
+\begin{frame}[plain]{Inhalt}
     \label{TableOfContents}
     \vfill
-    \tableofcontents
+    \begin{columns}[t]
+        \begin{column}{.5\textwidth}
+            \tableofcontents[sections={1}]
+        \end{column}
+        \begin{column}{.5\textwidth}
+            \tableofcontents[sections={2}]
+        \end{column}
+    \end{columns}
     \vfill
 \end{frame}
-}
+
+
+%-------------------------------------------------------------------------------
+
+
+\section{Einführung}
+
+\begin{frame}[plain]
+    \sectionpage
+\end{frame}
+
+
+%-------------------------------------------------------------------------------
+
+
+\subsection{Motivation}
+
+\begin{frame}{Motivation}
+    TODO
+\end{frame}
+
+
+%-------------------------------------------------------------------------------
+
+
+\subsection{Begriffsklärung}
+
+\begin{frame}{Begriffsklärung}
+    TODO
+\end{frame}
+
+
+%-------------------------------------------------------------------------------
+
+
+\subsection{Der Superblock}
+
+\begin{frame}{Der Superblock}
+    \begin{itemize}
+        \item Auf jedem Datenträger in Block \#1 gespeichert
+        \item In Buffer zwischengespeichert
+        \item Wird regelmäßig auf Datenträger geschrieben
+    \end{itemize}
+
+    \vfill
+
+    \lstinputlisting[firstline=12, lastline=27, firstnumber=5561]{source/filsys.h}
+\end{frame}
+
+
+%-------------------------------------------------------------------------------
+
+
+\subsection{Die mount Tabelle}
+
+\begin{frame}{Die \emph{mount} Tabelle}
+    \begin{itemize}
+        \item Für jedes eingebundene Dateisystem ein Eintrag mit wichtigen Zeigern
+
+        \vfill
+
+        \item systm.h:
+            \vspace{5pt}
+            \lstinputlisting[firstline=73, lastline=78, firstnumber=272]{source/systm.h}
+
+        \vfill
+
+        \item param.h:
+            \vspace{5pt}
+            \lstinputlisting[firstline=34, lastline=34, firstnumber=133]{source/param.h}
+
+        \vfill
+    \end{itemize}
+\end{frame}
 
 
 %-------------------------------------------------------------------------------
@@ -171,7 +258,35 @@
 
 \section{Funktionen}
 
+\begin{frame}[plain]
+    \sectionpage
+\end{frame}
+
+
+%-------------------------------------------------------------------------------
+
+
 \subsection{iinit()}
+
+\begin{frame}{iinit()}
+    \begin{itemize}
+        \item TODO
+        \item TODO
+        \item TODO
+        \item TODO
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{iinit()}
+    \begin{algorithmic}[1]
+        \State rootdev öffnen
+        \State superblock in nicht zugewiesenen Buffer kopieren
+        \State Zeiger in nullten Eintrag der mount Tabelle schreiben
+        \State Locks explizit zurücksetzen
+        \State als schreibbar markieren
+        \State Systemzeit setzen
+    \end{algorithmic}
+\end{frame}
 
 \begin{frame}{iinit()}
     \insertcode{source/alloc.c}{334}{6900}{23}{42}
@@ -182,6 +297,21 @@
 
 
 \subsection{smount()}
+
+\begin{frame}{smount()}
+    \begin{itemize}
+        \item TODO
+        \item TODO
+        \item TODO
+        \item TODO
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{smount()}
+    \begin{algorithmic}[1]
+        \State TODO
+    \end{algorithmic}
+\end{frame}
 
 \begin{frame}{smount()}
     \insertcode{source/sys3.c}{198}{6000}{87}{103}
