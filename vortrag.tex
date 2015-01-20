@@ -212,9 +212,9 @@
 %-------------------------------------------------------------------------------
 
 
-\subsection{Der Superblock}
+\subsection{Der Super Block}
 
-\begin{frame}{Der Superblock}
+\begin{frame}{Der Super Block}
     \begin{itemize}
         \item Auf jedem Datenträger in Block \#1 gespeichert
         \item In Buffer zwischengespeichert
@@ -232,7 +232,7 @@
 
 \subsection{Die mount Tabelle}
 
-\begin{frame}{Die \emph{mount} Tabelle}
+\begin{frame}{Die mount Tabelle}
     \begin{itemize}
         \item Für jedes eingebundene Dateisystem ein Eintrag mit wichtigen Zeigern
 
@@ -270,17 +270,16 @@
 
 \begin{frame}{iinit()}
     \begin{itemize}
-        \item TODO
-        \item TODO
-        \item TODO
-        \item TODO
+        \item Initialisieren der mount Tabelle für das Root Device
+        \item \texttt{m\_inodp} wird nicht gesetzt und wird auch nie genutzt
+        \item Setzen der Systemzeit
     \end{itemize}
 \end{frame}
 
 \begin{frame}{iinit()}
     \begin{algorithmic}[1]
-        \State rootdev öffnen
-        \State superblock in nicht zugewiesenen Buffer kopieren
+        \State Root Device öffnen
+        \State Super Block in nicht zugewiesenen Buffer kopieren
         \State Zeiger in nullten Eintrag der mount Tabelle schreiben
         \State Locks explizit zurücksetzen
         \State als schreibbar markieren
@@ -300,25 +299,36 @@
 
 \begin{frame}{smount()}
     \begin{itemize}
-        \item TODO
-        \item TODO
-        \item TODO
-        \item TODO
+        \item Mounten eines Dateisystems
+        \item Keine Überprüfung, was gemountet wurde
+        \item Keine Überprüfung des Hardware-Schreibschutzes
     \end{itemize}
 \end{frame}
 
 \begin{frame}{smount()}
     \begin{algorithmic}[1]
-        \State TODO
+        \State Lesen der übergebenen Argumente
+        \State Inode validieren
+        \For{jeden Eintrag in mount Tabelle}
+            \If{Gerät schon eingetragen} Fehler \EndIf
+            \If{Noch kein Eintrag reserviert} Reservieren \EndIf
+        \EndFor
+        \If{alles voll} Fehler \EndIf
+        \State Gerät öffnen
+        \State Super Block lesen
+        \State Eintrag in mount Tabelle füllen
+        \State Super Block in Buffer kopieren
+        \State Locks zurücksetzen, ro/rw setzen
+        \State Inode als gemountet markieren
     \end{algorithmic}
 \end{frame}
 
 \begin{frame}{smount()}
-    \insertcode{source/sys3.c}{198}{6000}{87}{103}
+    \insertcode{source/sys3.c}{198}{6000}{87}{102}
 \end{frame}
 
 \begin{frame}{smount()}
-    \insertcode{source/sys3.c}{198}{6000}{104}{121}
+    \insertcode{source/sys3.c}{198}{6000}{103}{121}
 \end{frame}
 
 \begin{frame}{smount()}
@@ -330,6 +340,18 @@
 
 
 \subsection{iget()}
+
+\begin{frame}{iget()}
+    \begin{itemize}
+        \item TODO
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{iget()}
+    \begin{algorithmic}[1]
+        \State TODO
+    \end{algorithmic}
+\end{frame}
 
 \begin{frame}{iget()}
     \insertcode{source/iget.c}{243}{7250}{27}{32}
@@ -350,6 +372,18 @@
 \subsection{getfs()}
 
 \begin{frame}{getfs()}
+    \begin{itemize}
+        \item TODO
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{getfs()}
+    \begin{algorithmic}[1]
+        \State TODO
+    \end{algorithmic}
+\end{frame}
+
+\begin{frame}{getfs()}
     \insertcode{source/alloc.c}{334}{6900}{268}{286}
 \end{frame}
 
@@ -360,6 +394,18 @@
 \subsection{update()}
 
 \begin{frame}{update()}
+    \begin{itemize}
+        \item TODO
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{update()}
+    \begin{algorithmic}[1]
+        \State TODO
+    \end{algorithmic}
+\end{frame}
+
+\begin{frame}{update()}
     \insertcode{source/alloc.c}{334}{6900}{302}{332}
 \end{frame}
 
@@ -368,6 +414,18 @@
 
 
 \subsection{sumount()}
+
+\begin{frame}{sumount()}
+    \begin{itemize}
+        \item TODO
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{sumount()}
+    \begin{algorithmic}[1]
+        \State TODO
+    \end{algorithmic}
+\end{frame}
 
 \begin{frame}{sumount()}
     \insertcode{source/sys3.c}{198}{6000}{145}{159}
@@ -384,6 +442,18 @@
 \subsection{alloc()}
 
 \begin{frame}{alloc()}
+    \begin{itemize}
+        \item TODO
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{alloc()}
+    \begin{algorithmic}[1]
+        \State TODO
+    \end{algorithmic}
+\end{frame}
+
+\begin{frame}{alloc()}
     \insertcode{source/alloc.c}{334}{6900}{57}{85}
 \end{frame}
 
@@ -396,6 +466,18 @@
 
 
 \subsection{itrunc()}
+
+\begin{frame}{itrunc()}
+    \begin{itemize}
+        \item TODO
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{itrunc()}
+    \begin{algorithmic}[1]
+        \State TODO
+    \end{algorithmic}
+\end{frame}
 
 \begin{frame}{itrunc()}
     \insertcode{source/iget.c}{243}{7250}{165}{174}
@@ -416,6 +498,18 @@
 \subsection{free()}
 
 \begin{frame}{free()}
+    \begin{itemize}
+        \item TODO
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{free()}
+    \begin{algorithmic}[1]
+        \State TODO
+    \end{algorithmic}
+\end{frame}
+
+\begin{frame}{free()}
     \insertcode{source/alloc.c}{334}{6900}{101}{128}
 \end{frame}
 
@@ -424,6 +518,18 @@
 
 
 \subsection{iput()}
+
+\begin{frame}{iput()}
+    \begin{itemize}
+        \item TODO
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{iput()}
+    \begin{algorithmic}[1]
+        \State TODO
+    \end{algorithmic}
+\end{frame}
 
 \begin{frame}{iput()}
     \insertcode{source/iget.c}{243}{7250}{95}{115}
@@ -436,6 +542,18 @@
 \subsection{ifree()}
 
 \begin{frame}{ifree()}
+    \begin{itemize}
+        \item TODO
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{ifree()}
+    \begin{algorithmic}[1]
+        \State TODO
+    \end{algorithmic}
+\end{frame}
+
+\begin{frame}{ifree()}
     \insertcode{source/alloc.c}{334}{6900}{235}{246}
 \end{frame}
 
@@ -444,6 +562,18 @@
 
 
 \subsection{iupdat()}
+
+\begin{frame}{iupdat()}
+    \begin{itemize}
+        \item TODO
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{iupdat()}
+    \begin{algorithmic}[1]
+        \State TODO
+    \end{algorithmic}
+\end{frame}
 
 \begin{frame}{iupdat()}
     \insertcode{source/iget.c}{243}{7250}{125}{153}
