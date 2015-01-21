@@ -1,0 +1,128 @@
+\documentclass[14pt, parskip, DIV=16]{scrbook}
+
+%--- includes ------------------------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{inconsolata}
+
+\usepackage{etex}
+
+\usepackage{xspace}
+\xspaceaddexceptions{"=}
+\usepackage{microtype}
+\usepackage{fixltx2e}
+
+% \usepackage{amsmath}
+% \usepackage{amssymb}
+% \usepackage{mathtools}
+
+% \usepackage{graphicx}
+\usepackage{xcolor}
+% \usepackage{tikz}
+% \usetikzlibrary{arrows,automata,calc,chains,trees,positioning,scopes,decorations.pathmorphing,shapes,backgrounds,tikzmark}
+
+% \usepackage{multicol}
+% \usepackage{tabu}
+% \usepackage{multirow}
+% \usepackage{booktabs}
+
+% \usepackage[margin=2cm]{geometry}
+
+\usepackage{listings}
+% \usepackage[noend]{algpseudocode}
+\usepackage{fp}
+
+% \usepackage{hyperref}
+
+%--- code listings -------------------------------------------------------------
+\lstset{
+    language=C,
+    tabsize=4,
+    frame=none,
+    xleftmargin=0pt,
+    framexleftmargin=0pt,
+    numbersep=4pt,
+    aboveskip=0pt,
+    belowskip=0pt,
+    numbers=left,
+    firstnumber=1,
+    stepnumber=1,
+    basewidth=0.45em,
+    showstringspaces=false,
+    basicstyle=\ttfamily,
+    numberstyle=\color{gray}\scriptsize,
+    identifierstyle=\color{black},
+    commentstyle=\color{gray},
+    % keywordstyle=\bfseries\color{red!70!black},
+    % stringstyle=\color{green!50!black},
+    keywordstyle=\color{black},
+    stringstyle=\color{black},
+    breaklines=true, % Turn off in preview, this makes it fucking slow
+    postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}},
+    literate={Ö}{{\"O}}1 {Ä}{{\"A}}1 {Ü}{{\"U}}1 {ß}{{\ss}}1 {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1,
+}
+
+\makeatletter\newcommand{\insertcode}[5]{
+    % USAGE:
+    %   \insertcode{filename}{linecount}{offset}{from}{to}
+    % filename:     Name of the source file
+    % linecount:    Number of lines in file
+    % offset:       Number of first line
+    % from:         Start with this line (relative to file)
+    % to:           End with this line (relative to file)
+    \FPeval{\result}{clip(#3+#4-1)}
+    \lstinputlisting[firstline=#4, lastline=#5, firstnumber=\result, name=code]{#1}
+}\makeatother
+
+\begin{document}
+
+\section*{iinit()}
+\insertcode{source/alloc.c}{334}{6900}{13}{42}
+\cleardoubleevenpage
+
+\section*{smount()}
+\insertcode{source/sys3.c}{198}{6000}{84}{139}
+\cleardoubleevenpage
+
+\section*{iget()}
+\insertcode{source/iget.c}{243}{7250}{10}{85}
+\cleardoubleevenpage
+
+\section*{getfs()}
+\insertcode{source/alloc.c}{334}{6900}{250}{286}
+\cleardoubleevenpage
+
+\section*{update()}
+\insertcode{source/alloc.c}{334}{6900}{290}{332}
+\cleardoubleevenpage
+
+\section*{sumount()}
+\insertcode{source/sys3.c}{198}{6000}{142}{174}
+\cleardoubleevenpage
+
+\section*{alloc()}
+\insertcode{source/alloc.c}{334}{6900}{46}{92}
+\cleardoubleevenpage
+
+\section*{itrunc()}
+\insertcode{source/iget.c}{243}{7250}{156}{200}
+\cleardoubleevenpage
+
+\section*{free()}
+\insertcode{source/alloc.c}{334}{6900}{96}{128}
+\clearpage
+
+\section*{iput()}
+\insertcode{source/iget.c}{243}{7250}{88}{115}
+\cleardoubleevenpage
+
+\section*{ifree()}
+\insertcode{source/alloc.c}{334}{6900}{228}{246}
+\clearpage
+
+\section*{iupdat()}
+\insertcode{source/iget.c}{243}{7250}{118}{153}
+
+\end{document}

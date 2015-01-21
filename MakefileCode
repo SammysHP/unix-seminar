@@ -1,0 +1,15 @@
+BASENAME = code-handout
+
+all: pdf
+
+pdf:
+	latexmk -pdf $(BASENAME)
+
+live:
+	latexmk -pdf -pvc $(BASENAME)
+
+clean:
+	latexmk -c $(BASENAME)
+
+clean-all: clean
+	latexmk -C $(BASENAME)
