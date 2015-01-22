@@ -1,3 +1,4 @@
+% \documentclass[aspectratio=169,10pt]{beamer}
 \documentclass{beamer}
 
 %--- includes ------------------------------------------------------------------
@@ -5,6 +6,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[ngerman]{babel}
 \usepackage{helvet}
+\usepackage{inconsolata}
 
 \usepackage{etex}
 
@@ -20,7 +22,7 @@
 % \usepackage{graphicx}
 % \usepackage{xcolor}
 \usepackage{tikz}
-\usetikzlibrary{arrows,automata,calc,chains,trees,positioning,scopes,decorations.pathmorphing,shapes,backgrounds,tikzmark}
+\usetikzlibrary{arrows,automata,calc,chains,trees,positioning,scopes,decorations.pathmorphing,shapes,backgrounds,tikzmark,fadings}
 
 % \usepackage{multicol}
 % \usepackage{tabu}
@@ -68,18 +70,19 @@
     numbers=left,
     firstnumber=1,
     stepnumber=1,
-    basewidth=0.45em,
+    basewidth=0.47em,
     showstringspaces=false,
-    basicstyle=\ttfamily\fontsize{7pt}{8pt}\selectfont,
+    basicstyle=\ttfamily\fontsize{8pt}{9pt}\selectfont,
     numberstyle=\color{lightgray}\fontsize{5pt}{6pt}\selectfont,
-    identifierstyle=\color{black},
+    identifierstyle=,
     commentstyle=\color{gray},
     % keywordstyle=\bfseries\color{red!70!black},
     % stringstyle=\color{green!50!black},
-    keywordstyle=\bfseries\color{black},
-    stringstyle=\color{black},
+    keywordstyle=,
+    stringstyle=,
     % breaklines=true, % Turn off in preview, this makes it fucking slow
     postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}},
+    showlines=true,
     literate={Ö}{{\"O}}1 {Ä}{{\"A}}1 {Ü}{{\"U}}1 {ß}{{\ss}}1 {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1,
 }
 
@@ -89,12 +92,17 @@
     framexleftmargin=0pt,
     numbersep=0pt,
     numbers=none,
-    % backgroundcolor=\color{black!10}
+    basicstyle=\ttfamily\fontsize{8pt}{8pt}\selectfont,
+    % backgroundcolor=\color{black!10},
 }
 
 \lstset{
     style=basestyle
 }
+
+\tikzfading[name=code fading, bottom color=transparent!70, top color=transparent!100]
+\newcommand*{\ContextLines}{5}
+\newcommand*{\CodeWidth}{10.7cm}
 
 \makeatletter\newcommand{\insertcode}[5]{
     % USAGE:
@@ -107,18 +115,36 @@
     \vfill
     \makebox[\linewidth][c]{
         \begin{tikzpicture}[remember picture, inner sep=0pt]
-            \path[use as bounding box] (-0.7,3.9) rectangle (11.5,-3.9);
+            \path[use as bounding box] (-0.6,3.9) rectangle (11.7,-3.9);
 
             \node (overview) {
                 \resizebox{8.5mm}{!}{\begin{minipage}{10cm}
-                    \lstinputlisting[style=nonumbers, name=overview]{#1}
+                    \lstinputlisting[style=nonumbers]{#1}
                 \end{minipage}}
             };
 
-            \node (code) [right=8mm of overview] {
-                \begin{minipage}{10cm}
+            \node (code) [right=5mm of overview] {
+                \begin{minipage}{\CodeWidth}
                     \FPeval{\result}{clip(#3+#4-1)}
-                    \lstinputlisting[firstline=#4, lastline=#5, firstnumber=\result, name=code]{#1}
+                    \lstinputlisting[firstline=#4, lastline=#5, firstnumber=\result]{#1}
+                \end{minipage}
+            };
+
+            \node [scope fading=code fading] [above=0mm of code] {
+                \begin{minipage}{\CodeWidth}
+                    \FPeval{\ResultStart}{clip(#4-\ContextLines)}
+                    \FPeval{\ResultEnd}{clip(#4-1)}
+                    \FPeval{\ResultLine}{clip(#3+\ResultStart-1)}
+                    \lstinputlisting[firstline=\ResultStart, lastline=\ResultEnd, firstnumber=\ResultLine]{#1}
+                \end{minipage}
+            };
+
+            \node [scope fading=code fading, fading transform={rotate=180}] [below=0mm of code] {
+                \begin{minipage}{\CodeWidth}
+                    \FPeval{\ResultStart}{clip(#5+1)}
+                    \FPeval{\ResultEnd}{clip(#5+\ContextLines)}
+                    \FPeval{\ResultLine}{clip(#3+\ResultStart-1)}
+                    \lstinputlisting[firstline=\ResultStart, lastline=\ResultEnd, firstnumber=\ResultLine]{#1}
                 \end{minipage}
             };
 
@@ -195,7 +221,10 @@
 \subsection{Motivation}
 
 \begin{frame}{Motivation}
-    TODO
+    \begin{itemize}
+        \item Zusammenführen von mehreren Dateisystemen
+        \item TODO
+    \end{itemize}
 \end{frame}
 
 
@@ -270,22 +299,22 @@
 
 \begin{frame}{iinit()}
     \begin{itemize}
-        \item Initialisieren der mount Tabelle für das Root Device
+        \item (Frühes) Initialisieren der mount Tabelle für das Root Device
         \item \texttt{m\_inodp} wird nicht gesetzt und wird auch nie genutzt
         \item Setzen der Systemzeit
     \end{itemize}
 \end{frame}
 
-\begin{frame}{iinit()}
-    \begin{algorithmic}[1]
-        \State Root Device öffnen
-        \State Super Block in nicht zugewiesenen Buffer kopieren
-        \State Zeiger in nullten Eintrag der mount Tabelle schreiben
-        \State Locks explizit zurücksetzen
-        \State als schreibbar markieren
-        \State Systemzeit setzen
-    \end{algorithmic}
-\end{frame}
+% \begin{frame}{iinit()}
+%     \begin{algorithmic}[1]
+%         \State Root Device öffnen
+%         \State Super Block in nicht zugewiesenen Buffer kopieren
+%         \State Zeiger in nullten Eintrag der mount Tabelle schreiben
+%         \State Locks explizit zurücksetzen
+%         \State als schreibbar markieren
+%         \State Systemzeit setzen
+%     \end{algorithmic}
+% \end{frame}
 
 \begin{frame}{iinit()}
     \insertcode{source/alloc.c}{334}{6900}{23}{42}
@@ -302,26 +331,27 @@
         \item Mounten eines Dateisystems
         \item Keine Überprüfung, was gemountet wurde
         \item Keine Überprüfung des Hardware-Schreibschutzes
+        \item Aufruf: \texttt{/etc/mount /dev/rk2 /rk2 [ro]}
     \end{itemize}
 \end{frame}
 
-\begin{frame}{smount()}
-    \begin{algorithmic}[1]
-        \State Lesen der übergebenen Argumente
-        \State Inode validieren
-        \For{jeden Eintrag in mount Tabelle}
-            \If{Gerät schon eingetragen} Fehler \EndIf
-            \If{Noch kein Eintrag reserviert} Reservieren \EndIf
-        \EndFor
-        \If{alles voll} Fehler \EndIf
-        \State Gerät öffnen
-        \State Super Block lesen
-        \State Eintrag in mount Tabelle füllen
-        \State Super Block in Buffer kopieren
-        \State Locks zurücksetzen, ro/rw setzen
-        \State Inode als gemountet markieren
-    \end{algorithmic}
-\end{frame}
+% \begin{frame}{smount()}
+%     \begin{algorithmic}[1]
+%         \State Lesen der übergebenen Argumente
+%         \State Inode validieren
+%         \For{jeden Eintrag in mount Tabelle}
+%             \If{Gerät schon eingetragen} Fehler \EndIf
+%             \If{Noch kein Eintrag reserviert} Reservieren \EndIf
+%         \EndFor
+%         \If{alles voll} Fehler \EndIf
+%         \State Gerät öffnen
+%         \State Super Block lesen
+%         \State Eintrag in mount Tabelle füllen
+%         \State Super Block in Buffer kopieren
+%         \State Locks zurücksetzen, ro/rw setzen
+%         \State Inode als gemountet markieren
+%     \end{algorithmic}
+% \end{frame}
 
 \begin{frame}{smount()}
     \insertcode{source/sys3.c}{198}{6000}{87}{102}
@@ -343,13 +373,33 @@
 
 \begin{frame}{iget()}
     \begin{itemize}
-        \item TODO
+        \item Suche eines Inodes: Device"=ID + Inode"=ID
+        \item Berücksichtigt Locking
+
+        \bigskip
+
+        \item Zuerst Suche im Speicher (Inode"=Tabelle)
+        \item Ansonsten einlesen und in Tabelle speichern
     \end{itemize}
 \end{frame}
 
 \begin{frame}{iget()}
     \begin{algorithmic}[1]
-        \State TODO
+        \For{jeden Eintrag in Inode-Tabelle}
+            \If{schon drin}
+                \If{gelockt}
+                    \State warten, von vorne anfangen
+                \EndIf
+                \If{gemountet}
+                    \State Mount-Tabelle durchsuchen
+                    \State Neustart mit gemountetem Dateisystem
+                \EndIf
+                \State lock \& return
+            \EndIf
+            \State erste freie Lücke in Tabelle merken
+        \EndFor
+        \State Inode in Tabelle initialisieren
+        \State Inode von Disk lesen und Daten kopieren
     \end{algorithmic}
 \end{frame}
 
@@ -362,7 +412,11 @@
 \end{frame}
 
 \begin{frame}{iget()}
-    \insertcode{source/iget.c}{243}{7250}{60}{85}
+    \insertcode{source/iget.c}{243}{7250}{60}{69}
+\end{frame}
+
+\begin{frame}{iget()}
+    \insertcode{source/iget.c}{243}{7250}{70}{85}
 \end{frame}
 
 
@@ -373,14 +427,16 @@
 
 \begin{frame}{getfs()}
     \begin{itemize}
-        \item TODO
-    \end{itemize}
-\end{frame}
+        \item Sucht Superblock für übergebene Device"=ID in mount Tabelle
 
-\begin{frame}{getfs()}
-    \begin{algorithmic}[1]
-        \State TODO
-    \end{algorithmic}
+        \bigskip
+
+        \item Überprüft einige Werte auf mögliche Fehler
+            \begin{itemize}
+                \item Größe der Inode"=Liste
+                \item Größe der Liste freier Blöcke
+            \end{itemize}
+    \end{itemize}
 \end{frame}
 
 \begin{frame}{getfs()}
@@ -395,18 +451,31 @@
 
 \begin{frame}{update()}
     \begin{itemize}
-        \item TODO
+        \item Entspricht \texttt{sync}
+        \item Wird regelmäßig (alle 30 s) aufgerufen
+
+        \bigskip
+
+        \item Schreibt modifizierte Super Blocks
+        \item Schreibt modifizierte Inodes
+        \item Erzwingt Schreiben verzögerter Blöcke
     \end{itemize}
 \end{frame}
 
 \begin{frame}{update()}
-    \begin{algorithmic}[1]
-        \State TODO
-    \end{algorithmic}
+    \insertcode{source/alloc.c}{334}{6900}{302}{310}
 \end{frame}
 
 \begin{frame}{update()}
-    \insertcode{source/alloc.c}{334}{6900}{302}{332}
+    \insertcode{source/alloc.c}{334}{6900}{311}{323}
+\end{frame}
+
+\begin{frame}{update()}
+    \insertcode{source/alloc.c}{334}{6900}{324}{329}
+\end{frame}
+
+\begin{frame}{update()}
+    \insertcode{source/alloc.c}{334}{6900}{330}{332}
 \end{frame}
 
 
@@ -417,14 +486,10 @@
 
 \begin{frame}{sumount()}
     \begin{itemize}
-        \item TODO
+        \item Unmounten eines Dateisystems
+        \medskip
+        \item Fehler, falls noch eine Datei geöffnet ist
     \end{itemize}
-\end{frame}
-
-\begin{frame}{sumount()}
-    \begin{algorithmic}[1]
-        \State TODO
-    \end{algorithmic}
 \end{frame}
 
 \begin{frame}{sumount()}
