@@ -15,25 +15,25 @@
 \usepackage{microtype}
 \usepackage{fixltx2e}
 
-% \usepackage{amsmath}
-% \usepackage{amssymb}
-% \usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
 
-% \usepackage{graphicx}
-% \usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{xcolor}
 \usepackage{tikz}
 \usetikzlibrary{arrows,automata,calc,chains,trees,positioning,scopes,decorations.pathmorphing,shapes,backgrounds,tikzmark,fadings}
 
-% \usepackage{multicol}
-% \usepackage{tabu}
-% \usepackage{multirow}
-% \usepackage{booktabs}
+\usepackage{multicol}
+\usepackage{tabu}
+\usepackage{multirow}
+\usepackage{booktabs}
 
 \usepackage{listings}
 \usepackage[noend]{algpseudocode}
 \usepackage{fp}
 
-% \usepackage{hyperref}
+\usepackage{hyperref}
 
 %--- colors and layout ---------------------------------------------------------
 \usetheme{default}
@@ -223,6 +223,7 @@
 \begin{frame}{Motivation}
     \begin{itemize}
         \item Zusammenführen von mehreren Dateisystemen
+        \item Strukturierung und Zugriff auf Datenträger
         \item TODO
     \end{itemize}
 \end{frame}
@@ -508,18 +509,101 @@
 
 \begin{frame}{alloc()}
     \begin{itemize}
-        \item TODO
+        \item Sucht einen freien Block auf einem Datenträger
     \end{itemize}
 \end{frame}
 
-\begin{frame}{alloc()}
-    \begin{algorithmic}[1]
-        \State TODO
-    \end{algorithmic}
+\begin{frame}{Liste freier Blöcke}
+    \begin{itemize}
+        \item Bis zu 100 freie Blöcke im Hauptspeicher
+        \item 0. Eintrag verlinkt Block mit freien Blöcken
+        \item Allererster Eintrag ist 0: Keine weiteren freien Blöcke
+        \item FILO
+    \end{itemize}
+
+    \centering
+    \begin{tikzpicture}[start chain=going right, >=stealth', node distance=7mm]
+        \node [on chain] (a) {
+            \begin{tabu}{|@{\,}c@{\,}|c|}
+                \hline
+                0 & 0 \\
+                \hline
+                1 & \qquad\qquad \\
+                \hline
+                2 & \\
+                \hline
+                \multicolumn{2}{|c|}{\vdots} \\
+                \hline
+                98 & \\
+                \hline
+                99 & \\
+                \hline
+            \end{tabu}
+        };
+        \node [on chain] (b) {
+            \begin{tabu}{|@{\,}c@{\,}|c|}
+                \hline
+                0 & \\
+                \hline
+                1 & \qquad\qquad \\
+                \hline
+                2 & \\
+                \hline
+                \multicolumn{2}{|c|}{\vdots} \\
+                \hline
+                98 & \\
+                \hline
+                99 & \\
+                \hline
+            \end{tabu}
+        };
+        \node [on chain] (c) {
+            \begin{tabu}{|@{\,}c@{\,}|c|}
+                \hline
+                0 & \\
+                \hline
+                1 & \qquad\qquad \\
+                \hline
+                2 & \\
+                \hline
+                \multicolumn{2}{|c|}{\vdots} \\
+                \hline
+                98 & \\
+                \hline
+                99 & \\
+                \hline
+            \end{tabu}
+        };
+        \node [on chain, label=below:\texttt{s\_free[100]}] (d) {
+            \begin{tabu}{|@{\,}c@{\,}|c|}
+                \hline
+                0 & \\
+                \hline
+                1 & \qquad\qquad \\
+                \hline
+                2 & \\
+                \hline
+                \multicolumn{2}{|c|}{\vdots} \\
+                \hline
+                98 & \\
+                \hline
+                99 & \\
+                \hline
+            \end{tabu}
+        };
+
+        \draw [->] (b.127) to [out=180, in=90] (a.north);
+        \draw [->, dotted] (c.127) to [out=180, in=90] (b.north);
+        \draw [->] (d.127) to [out=180, in=90] (c.north);
+    \end{tikzpicture}
 \end{frame}
 
 \begin{frame}{alloc()}
-    \insertcode{source/alloc.c}{334}{6900}{57}{85}
+    \insertcode{source/alloc.c}{334}{6900}{57}{71}
+\end{frame}
+
+\begin{frame}{alloc()}
+    \insertcode{source/alloc.c}{334}{6900}{72}{85}
 \end{frame}
 
 \begin{frame}{alloc()}
@@ -534,22 +618,40 @@
 
 \begin{frame}{itrunc()}
     \begin{itemize}
-        \item TODO
+        \item Gibt alle in einem Inode referenzierte Blöcke frei
+        \item Rückwärts um Fragmentierung entgegenzuwirken
     \end{itemize}
 \end{frame}
 
 \begin{frame}{itrunc()}
     \begin{algorithmic}[1]
-        \State TODO
+        \If{Special File} \Return \EndIf
+        \For{jeden Zeiger auf Block in Inode rückwärts}
+            \If{indirekte Addressierung}
+                \State Lese Block
+                \For{alle Einträge rückwärts}
+                    \If{ist letzter Eintrag in Inode}
+                        \Comment Doppelt indirekt
+                        \State Lese Block
+                        \For{alle Einträge rückwärts}
+                            \State Lösche Block
+                        \EndFor
+                    \EndIf
+                    \State Lösche Block
+                \EndFor
+            \EndIf
+            \State Lösche Block
+        \EndFor
+        \State Inode zurücksetzen
     \end{algorithmic}
 \end{frame}
 
 \begin{frame}{itrunc()}
-    \insertcode{source/iget.c}{243}{7250}{165}{174}
+    \insertcode{source/iget.c}{243}{7250}{165}{173}
 \end{frame}
 
 \begin{frame}{itrunc()}
-    \insertcode{source/iget.c}{243}{7250}{175}{195}
+    \insertcode{source/iget.c}{243}{7250}{174}{195}
 \end{frame}
 
 \begin{frame}{itrunc()}
