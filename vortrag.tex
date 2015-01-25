@@ -76,12 +76,10 @@
     numberstyle=\color{lightgray}\fontsize{5pt}{6pt}\selectfont,
     identifierstyle=,
     commentstyle=\color{gray},
-    % keywordstyle=\bfseries\color{red!70!black},
-    % stringstyle=\color{green!50!black},
     keywordstyle=,
     stringstyle=,
-    % breaklines=true, % Turn off in preview, this makes it fucking slow
-    postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}},
+    breaklines=true, % Turn off in preview, this makes it fucking slow
+    postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{gray}\hookrightarrow\space}},
     showlines=true,
     literate={Ö}{{\"O}}1 {Ä}{{\"A}}1 {Ü}{{\"U}}1 {ß}{{\ss}}1 {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1,
 }
@@ -93,7 +91,6 @@
     numbersep=0pt,
     numbers=none,
     basicstyle=\ttfamily\fontsize{8pt}{8pt}\selectfont,
-    % backgroundcolor=\color{black!10},
 }
 
 \lstset{
@@ -102,7 +99,7 @@
 
 \tikzfading[name=code fading, bottom color=transparent!70, top color=transparent!100]
 \newcommand*{\ContextLines}{5}
-\newcommand*{\CodeWidth}{10.7cm}
+\newcommand*{\CodeWidth}{10.4cm}
 
 \makeatletter\newcommand{\insertcode}[5]{
     % USAGE:
@@ -123,7 +120,7 @@
                 \end{minipage}}
             };
 
-            \node (code) [right=5mm of overview] {
+            \node (code) [right=8mm of overview] {
                 \begin{minipage}{\CodeWidth}
                     \FPeval{\result}{clip(#3+#4-1)}
                     \lstinputlisting[firstline=#4, lastline=#5, firstnumber=\result]{#1}
@@ -223,19 +220,9 @@
 \begin{frame}{Motivation}
     \begin{itemize}
         \item Zusammenführen von mehreren Dateisystemen
-        \item Strukturierung und Zugriff auf Datenträger
-        \item TODO
+        \medskip
+        \item Speichern und Lesen der Metadaten auf dem Datenträger
     \end{itemize}
-\end{frame}
-
-
-%-------------------------------------------------------------------------------
-
-
-\subsection{Begriffsklärung}
-
-\begin{frame}{Begriffsklärung}
-    TODO
 \end{frame}
 
 
@@ -251,7 +238,7 @@
         \item Wird regelmäßig auf Datenträger geschrieben
     \end{itemize}
 
-    \vfill
+    \medskip
 
     \lstinputlisting[firstline=12, lastline=27, firstnumber=5561]{source/filsys.h}
 \end{frame}
@@ -266,19 +253,17 @@
     \begin{itemize}
         \item Für jedes eingebundene Dateisystem ein Eintrag mit wichtigen Zeigern
 
-        \vfill
+        \bigskip
 
         \item systm.h:
-            \vspace{5pt}
+            \smallskip
             \lstinputlisting[firstline=73, lastline=78, firstnumber=272]{source/systm.h}
 
-        \vfill
+        \bigskip
 
         \item param.h:
-            \vspace{5pt}
+            \smallskip
             \lstinputlisting[firstline=34, lastline=34, firstnumber=133]{source/param.h}
-
-        \vfill
     \end{itemize}
 \end{frame}
 
@@ -306,17 +291,6 @@
     \end{itemize}
 \end{frame}
 
-% \begin{frame}{iinit()}
-%     \begin{algorithmic}[1]
-%         \State Root Device öffnen
-%         \State Super Block in nicht zugewiesenen Buffer kopieren
-%         \State Zeiger in nullten Eintrag der mount Tabelle schreiben
-%         \State Locks explizit zurücksetzen
-%         \State als schreibbar markieren
-%         \State Systemzeit setzen
-%     \end{algorithmic}
-% \end{frame}
-
 \begin{frame}{iinit()}
     \insertcode{source/alloc.c}{334}{6900}{23}{42}
 \end{frame}
@@ -332,28 +306,10 @@
         \item Mounten eines Dateisystems
         \item Keine Überprüfung, was gemountet wurde
         \item Keine Überprüfung des Hardware-Schreibschutzes
+        \medskip
         \item Aufruf: \texttt{/etc/mount /dev/rk2 /rk2 [ro]}
     \end{itemize}
 \end{frame}
-
-% \begin{frame}{smount()}
-%     \begin{algorithmic}[1]
-%         \State Lesen der übergebenen Argumente
-%         \State Inode validieren
-%         \For{jeden Eintrag in mount Tabelle}
-%             \If{Gerät schon eingetragen} Fehler \EndIf
-%             \If{Noch kein Eintrag reserviert} Reservieren \EndIf
-%         \EndFor
-%         \If{alles voll} Fehler \EndIf
-%         \State Gerät öffnen
-%         \State Super Block lesen
-%         \State Eintrag in mount Tabelle füllen
-%         \State Super Block in Buffer kopieren
-%         \State Locks zurücksetzen, ro/rw setzen
-%         \State Inode als gemountet markieren
-%     \end{algorithmic}
-% \end{frame}
-
 \begin{frame}{smount()}
     \insertcode{source/sys3.c}{198}{6000}{87}{102}
 \end{frame}
@@ -619,6 +575,7 @@
 \begin{frame}{itrunc()}
     \begin{itemize}
         \item Gibt alle in einem Inode referenzierte Blöcke frei
+        \medskip
         \item Rückwärts um Fragmentierung entgegenzuwirken
     \end{itemize}
 \end{frame}
@@ -666,18 +623,18 @@
 
 \begin{frame}{free()}
     \begin{itemize}
-        \item TODO
+        \item Fügt einen Block in die Liste freier Blöcke ein
+        \medskip
+        \item Wenn List voll, schreibe sie auf den Datenträger
     \end{itemize}
 \end{frame}
 
 \begin{frame}{free()}
-    \begin{algorithmic}[1]
-        \State TODO
-    \end{algorithmic}
+    \insertcode{source/alloc.c}{334}{6900}{101}{114}
 \end{frame}
 
 \begin{frame}{free()}
-    \insertcode{source/alloc.c}{334}{6900}{101}{128}
+    \insertcode{source/alloc.c}{334}{6900}{115}{128}
 \end{frame}
 
 
@@ -688,14 +645,10 @@
 
 \begin{frame}{iput()}
     \begin{itemize}
-        \item TODO
+        \item Dekrementiert Referenz"=Zähler eines Inodes
+        \item Gibt Inode im Hauptspeicher frei, falls letzte Referenz
+        \item Löscht Datei, falls kein Link mehr
     \end{itemize}
-\end{frame}
-
-\begin{frame}{iput()}
-    \begin{algorithmic}[1]
-        \State TODO
-    \end{algorithmic}
 \end{frame}
 
 \begin{frame}{iput()}
@@ -710,14 +663,11 @@
 
 \begin{frame}{ifree()}
     \begin{itemize}
-        \item TODO
+        \item Markiert Inode als frei\\
+            Also: In \texttt{s\_inode} Liste des Super Blocks einfügen
+        \medskip
+        \item Inode wird verworfen, falls Liste voll ist
     \end{itemize}
-\end{frame}
-
-\begin{frame}{ifree()}
-    \begin{algorithmic}[1]
-        \State TODO
-    \end{algorithmic}
 \end{frame}
 
 \begin{frame}{ifree()}
@@ -732,18 +682,16 @@
 
 \begin{frame}{iupdat()}
     \begin{itemize}
-        \item TODO
+        \item Aktualisiert Inode auf Datenträger
     \end{itemize}
 \end{frame}
 
 \begin{frame}{iupdat()}
-    \begin{algorithmic}[1]
-        \State TODO
-    \end{algorithmic}
+    \insertcode{source/iget.c}{243}{7250}{125}{132}
 \end{frame}
 
 \begin{frame}{iupdat()}
-    \insertcode{source/iget.c}{243}{7250}{125}{153}
+    \insertcode{source/iget.c}{243}{7250}{133}{153}
 \end{frame}
 
 
