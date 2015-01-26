@@ -22,7 +22,7 @@
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage{tikz}
-\usetikzlibrary{arrows,automata,calc,chains,trees,positioning,scopes,decorations.pathmorphing,shapes,backgrounds,tikzmark,fadings}
+\usetikzlibrary{arrows,automata,calc,chains,trees,positioning,scopes,decorations.pathmorphing,decorations.pathreplacing,shapes,backgrounds,tikzmark,fadings}
 
 \usepackage{multicol}
 \usepackage{tabu}
@@ -78,7 +78,7 @@
     commentstyle=\color{gray},
     keywordstyle=,
     stringstyle=,
-    breaklines=true, % Turn off in preview, this makes it fucking slow
+    % breaklines=true, % Turn off in preview, this makes it fucking slow
     postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{gray}\hookrightarrow\space}},
     showlines=true,
     literate={Ö}{{\"O}}1 {Ä}{{\"A}}1 {Ü}{{\"U}}1 {ß}{{\ss}}1 {ü}{{\"u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1,
@@ -247,6 +247,44 @@
 %-------------------------------------------------------------------------------
 
 
+\subsection{Disk Layout}
+
+\begin{frame}<1>[label=disklayout]{Disk Layout}
+    \centering
+    \begin{tikzpicture}[start chain=going right, >=stealth', node distance=-.5pt]
+        \tikzset{block/.style={minimum width=10mm, minimum height=15mm, draw}}
+
+        \node [block, on chain, fill=maincolor!25] (boot) {0};
+        \node [block, on chain, fill=maincolor!10] (superblock) {1};
+        \node [block, on chain, fill=maincolor!25] (inode1) {2};
+        \node [block, on chain, draw=none, minimum width=15mm] {\ldots};
+        \node [block, on chain, fill=maincolor!25] (inode2) {};
+        \node [block, on chain, fill=maincolor!10] (data1) {};
+        \node [block, on chain, draw=none, minimum width=15mm] {\ldots};
+        \node [block, on chain, fill=maincolor!10] (data2) {};
+
+        \draw [decoration={brace,amplitude=0.7em},decorate,thick]
+            ($(inode2.south east)+(-1pt,-2pt)$) -- ($(inode1.south west)+(1pt,-2pt)$)
+            node [pos=0.5, below=3mm] {Inodes};
+        \draw [decoration={brace,amplitude=0.7em},decorate,thick]
+            ($(data2.south east)+(-1pt,-2pt)$) -- ($(data1.south west)+(1pt,-2pt)$)
+            node [pos=0.5, below=3mm] {Daten};
+        \draw [decoration={brace,amplitude=0.7em},decorate,thick]
+            ($(superblock.north west)+(1pt,2pt)$) -- ($(superblock.north east)+(-1pt,2pt)$)
+            node [pos=0.5, above=3mm] {512 B};
+        \draw [decoration={brace,amplitude=0.7em},decorate,thick]
+            ($(superblock.south east)+(-1pt,-2pt)$) -- ($(superblock.south west)+(1pt,-2pt)$)
+            node [pos=0.5, below right=3mm and -5mm, align=center] {Super\\Block};
+        \draw [decoration={brace,amplitude=0.7em},decorate,thick]
+            ($(boot.south east)+(-1pt,-2pt)$) -- ($(boot.south west)+(1pt,-2pt)$)
+            node [pos=0.5, below left=3mm and -5mm, align=center] {Boot\\Block};
+    \end{tikzpicture}
+\end{frame}
+
+
+%-------------------------------------------------------------------------------
+
+
 \subsection{Die mount Tabelle}
 
 \begin{frame}{Die mount Tabelle}
@@ -372,9 +410,38 @@
     \insertcode{source/iget.c}{243}{7250}{60}{69}
 \end{frame}
 
-\begin{frame}{iget()}
+\begin{frame}<1>[label=iget]{iget()}
     \insertcode{source/iget.c}{243}{7250}{70}{85}
 \end{frame}
+
+\againframe<2>{disklayout}
+
+\begin{frame}{ino.h}
+    \lstinputlisting[lastline=17]{source/ino.h}
+    \begin{multline*}
+        \texttt{int}
+        +
+        \texttt{char}
+        +
+        \texttt{char}
+        +
+        \texttt{char}
+        +
+        \texttt{char}
+        \\
+        +
+        \texttt{char*}
+        +
+        \texttt{int[8]}
+        +
+        \texttt{int[2]}
+        +
+        \texttt{int[2]}
+        = 32\,\text{Byte}
+    \end{multline*}
+\end{frame}
+
+\againframe<2>{iget}
 
 
 %-------------------------------------------------------------------------------
